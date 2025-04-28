@@ -31,10 +31,15 @@ async function run() {
     const { data: currentPulls } = await octokit.rest.pulls.list({
       owner,
       repo,
+      state: "open",
+      head: `${owner}:${fromBranch}`,
+      base: toBranch,
     });
 
     const currentPull = currentPulls.find((pull) => {
-      return pull.head.ref === fromBranch && pull.base.ref === toBranch;
+      return pull.title == pullRequestTitle
+        ? pullRequestTitle
+        : `sync: ${fromBranch} to ${toBranch}`;
     });
 
     if (!currentPull) {
@@ -103,20 +108,35 @@ async function run() {
 
         core.setOutput("PULL_REQUEST_URL", pullRequest.html_url.toString());
         core.setOutput("PULL_REQUEST_NUMBER", pullRequest.number.toString());
+        core.summary.addRaw("Pull Request successfully created :rocket:", true);
+        core.summary.addLink(
+          `PR: ${pullRequest.number}`,
+          pullRequest.html_url.toString()
+        );
       } else {
         console.log(
           `There is no content difference between ${fromBranch} and ${toBranch}.`
+        );
+        core.summary.addRaw(
+          `There is no content difference between ${fromBranch} and ${toBranch}. Not creating a PR.`,
+          true
         );
       }
     } else {
       console.log(
         `There is already a pull request (${currentPull.number}) to ${toBranch} from ${fromBranch}.`,
-        `You can view it here: ${currentPull.url}`
+        `You can view it here: ${currentPull.html_url}`
       );
 
-      core.setOutput("PULL_REQUEST_URL", currentPull.url.toString());
+      core.setOutput("PULL_REQUEST_URL", currentPull.html_url.toString());
       core.setOutput("PULL_REQUEST_NUMBER", currentPull.number.toString());
+      core.summary.addRaw("Pull Request already exists", true);
+      core.summary.addLink(
+        `PR: ${currentPull.number}`,
+        currentPull.html_url.toString()
+      );
     }
+    core.summary.write({ overwrite: true });
   } catch (error) {
     core.setFailed(error.message);
   }
