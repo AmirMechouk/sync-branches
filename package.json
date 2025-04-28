@@ -1,17 +1,20 @@
 {
   "name": "sync-branches",
-  "version": "1.4.0",
-  "description": "GitHub Action to sync a branch when another one is updated",
+  "version": "1.5.0",
+  "description": "GitHub Action to sync a branch when another one is updated. Forked from (https://github.com/TreTuna/sync-branches)",
   "main": "index.js",
-  "author": "Tre Ammatuna <tre@tretuna.com>",
+  "author": "AmirMechouk <amir@mechouk.com>",
+  "contributors": [
+    "Tre Ammatuna <tre@tretuna.com> (https://github.com/TreTuna/sync-branches)"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tretuna/sync-branches/issues"
+    "url": "https://github.com/AmirMechouk/sync-branches/issues"
   },
-  "homepage": "https://github.com/tretuna/sync-branches#readme",
+  "homepage": "https://github.com/AmirMechouk/sync-branches#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:TreTuna/sync-branches.git"
+    "url": "git@github.com:AmirMechouk/sync-branches.git"
   },
   "keywords": [
     "GitHub",
@@ -24,12 +27,12 @@
     "test": "eslint index.js && jest"
   },
   "dependencies": {
-    "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0"
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@vercel/ncc": "^0.38.3"
   },
   "devDependencies": {
-    "@zeit/ncc": "^0.22.3",
     "eslint": "^8.0.0",
-    "jest": "^27.2.5"
+    "jest": "^29.7.0"
   }
 }

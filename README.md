@@ -1,6 +1,6 @@
 # sync-branches
 
-GitHub Action to sync one branch when another is updated.
+GitHub Action to sync one branch when another is updated. This is a fork of [https://github.com/TreTuna/sync-branches](sync-branches) as that project is unmaintained.
 
 ## Inputs
 
@@ -40,6 +40,7 @@ Set to `true` to force checking content comparison between branches.
 No more empty pull requests being opened and triggering CI jobs.
 
 Default: `false`
+
 ### `REVIEWERS`
 
 JSON array of GitHub user `login`s that will be requested to review the PR.
@@ -47,6 +48,7 @@ JSON array of GitHub user `login`s that will be requested to review the PR.
 Example: `'["tretuna"]'`
 
 Default: `[]`
+
 ### `TEAM_REVIEWERS`
 
 JSON array of GitHub team `slug`s that will be requested to review the PR.
@@ -54,6 +56,7 @@ JSON array of GitHub team `slug`s that will be requested to review the PR.
 Example: `'["js-team"]'`
 
 Default: `[]`
+
 ### `PULL_REQUEST_AUTO_MERGE_METHOD`
 
 Set a merge method for auto merging.
@@ -87,14 +90,14 @@ jobs:
     name: Syncing branches
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set up Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 20
       - name: Opening pull request
         id: pull
-        uses: tretuna/sync-branches@1.4.0
+        uses: AmirMechouk/sync-branches@1.4.0
         with:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           FROM_BRANCH: "main"

@@ -10,7 +10,9 @@ async function run() {
     const githubToken = core.getInput("GITHUB_TOKEN", { required: true });
     const pullRequestTitle = core.getInput("PULL_REQUEST_TITLE");
     const pullRequestBody = core.getInput("PULL_REQUEST_BODY");
-    const pullRequestAutoMergeMethod = core.getInput("PULL_REQUEST_AUTO_MERGE_METHOD");
+    const pullRequestAutoMergeMethod = core.getInput(
+      "PULL_REQUEST_AUTO_MERGE_METHOD"
+    );
     const pullRequestIsDraft =
       core.getInput("PULL_REQUEST_IS_DRAFT").toLowerCase() === "true";
     const contentComparison =
@@ -75,8 +77,8 @@ async function run() {
             owner,
             repo,
             issue_number: pullRequest.number,
-            labels
-          })
+            labels,
+          });
         }
 
         if (pullRequestAutoMergeMethod) {
@@ -85,7 +87,7 @@ async function run() {
               owner,
               repo,
               pull_number: pullRequest.number,
-              merge_method: pullRequestAutoMergeMethod
+              merge_method: pullRequestAutoMergeMethod,
             });
             isMerged = true;
           } catch (err) {
@@ -94,10 +96,12 @@ async function run() {
         }
 
         console.log(
-          `Pull request (${pullRequest.number}) successfully created${isMerged ? ' and merged' : ' '}! You can view it here: ${pullRequest.url}`
+          `Pull request (${pullRequest.number}) successfully created${
+            isMerged ? " and merged" : " "
+          }! You can view it here: ${pullRequest.html_url}`
         );
 
-        core.setOutput("PULL_REQUEST_URL", pullRequest.url.toString());
+        core.setOutput("PULL_REQUEST_URL", pullRequest.html_url.toString());
         core.setOutput("PULL_REQUEST_NUMBER", pullRequest.number.toString());
       } else {
         console.log(
