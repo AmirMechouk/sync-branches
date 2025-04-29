@@ -23,11 +23,12 @@ async function run() {
     let isMerged = false;
 
     console.log(
-      `Should a pull request to ${toBranch} from ${fromBranch} be created?`
+      `Determining if ${fromBranch} should be synced to ${toBranch}...`
     );
 
     const octokit = new github.getOctokit(githubToken);
 
+    // Find all current open PR's that are from the source branch to the target branch
     const { data: currentPulls } = await octokit.rest.pulls.list({
       owner,
       repo,
@@ -36,13 +37,18 @@ async function run() {
       base: toBranch,
     });
 
+    // Check if there's a current pull request for syncing our branches.
+    // First check if the title matches a custom provided pullRequestTitle,
+    // otherwise check if the title matches the default title.
     const currentPull = currentPulls.find((pull) => {
       return pull.title == pullRequestTitle
         ? pullRequestTitle
         : `sync: ${fromBranch} to ${toBranch}`;
     });
 
+    // If there's no current PR open, then go through the steps of creating one
     if (!currentPull) {
+      // Run content comparison (if enabled) to determine if we should create a PR
       let shouldCreatePullRequest = true;
       if (contentComparison) {
         shouldCreatePullRequest = await hasContentDifference(
@@ -67,6 +73,7 @@ async function run() {
           draft: pullRequestIsDraft,
         });
 
+        // Add reviewers/team reviewers if they're set in the inputs
         if (reviewers.length > 0 || team_reviewers.length > 0) {
           octokit.rest.pulls.requestReviewers({
             owner,
@@ -77,6 +84,7 @@ async function run() {
           });
         }
 
+        // Add labels if they're set in the inputs
         if (labels.length > 0) {
           octokit.rest.issues.addLabels({
             owner,
@@ -85,7 +93,7 @@ async function run() {
             labels,
           });
         }
-
+        // Auto-merge the PR if it's enabled
         if (pullRequestAutoMergeMethod) {
           try {
             await octokit.rest.pulls.merge({
@@ -102,7 +110,7 @@ async function run() {
 
         console.log(
           `Pull request (${pullRequest.number}) successfully created${
-            isMerged ? " and merged" : " "
+            isMerged ? " and merged" : ""
           }! You can view it here: ${pullRequest.html_url}`
         );
 
@@ -110,7 +118,7 @@ async function run() {
         core.setOutput("PULL_REQUEST_NUMBER", pullRequest.number.toString());
         core.summary.addRaw("Pull Request successfully created :rocket:", true);
         core.summary.addLink(
-          `PR: ${pullRequest.number}`,
+          `PR: #${pullRequest.number}`,
           pullRequest.html_url.toString()
         );
       } else {
@@ -123,6 +131,7 @@ async function run() {
         );
       }
     } else {
+      // PR already exists, nothing to do. Just output a message.
       console.log(
         `There is already a pull request (${currentPull.number}) to ${toBranch} from ${fromBranch}.`,
         `You can view it here: ${currentPull.html_url}`
@@ -132,10 +141,11 @@ async function run() {
       core.setOutput("PULL_REQUEST_NUMBER", currentPull.number.toString());
       core.summary.addRaw("Pull Request already exists", true);
       core.summary.addLink(
-        `PR: ${currentPull.number}`,
+        `PR: #${currentPull.number}`,
         currentPull.html_url.toString()
       );
     }
+    // Write the summary buffer
     core.summary.write({ overwrite: true });
   } catch (error) {
     core.setFailed(error.message);
