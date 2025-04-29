@@ -31851,7 +31851,7 @@ async function run() {
     let isMerged = false;
 
     console.log(
-      `Determining if ${fromBranch} should be synced to ${toBranch}...`
+      `Determining if ${fromBranch} should be synced to ${toBranch}. For owner: ${owner} and repo: ${repo}`
     );
 
     const octokit = new github.getOctokit(githubToken);
