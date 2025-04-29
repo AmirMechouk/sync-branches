@@ -19,6 +19,6 @@ jobs:
         id: pull
         uses: ./
         with:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FROM_BRANCH: "main"
           TO_BRANCH: "develop"

@@ -4,7 +4,7 @@ GitHub Action to sync one branch when another is updated. This is a fork of [htt
 
 ## Inputs
 
-### `GITHUB_TOKEN`
+### `GH_TOKEN`
 
 **Required** The token to be used for creating the pull request. Can be set to the one given for the workflow or another user.
 
@@ -99,7 +99,7 @@ jobs:
         id: pull
         uses: AmirMechouk/sync-branches@1.4.0
         with:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
           FROM_BRANCH: "main"
           TO_BRANCH: "develop"
 ```

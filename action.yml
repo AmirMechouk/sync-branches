@@ -4,7 +4,7 @@ branding:
   icon: git-pull-request
   color: green
 inputs:
-  GITHUB_TOKEN:
+  GH_TOKEN:
     description: "User token to be associated with this pull request."
     required: true
   FROM_BRANCH:
