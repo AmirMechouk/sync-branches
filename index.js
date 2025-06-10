@@ -104,6 +104,7 @@ async function run() {
             });
             isMerged = true;
           } catch (err) {
+            console.error("Error merging pull request:", err);
             isMerged = false;
           }
         }
